@@ -1,6 +1,3 @@
-# :warning: DO NOT USE THIS BRANCH UNTIL LOGO RELEASE (2024 Summer)
-- See https://sinicx.sharepoint.com/:u:/r/sites/OSX/SitePages/%E3%83%AD%E3%82%B4%E4%BD%9C%E6%88%90---Logo-design.aspx?csf=1&web=1&share=EVUOoIvp_xBBu86MfZIoRzwBlGsX928w_FniJL0z3aeSZQ&e=LeINXk
-
 # sinicx-template
 [![build](https://github.com/omron-sinicx/projectpage-template/actions/workflows/build.yaml/badge.svg)](https://github.com/omron-sinicx/projectpage-template/actions/workflows/build.yaml) [![build](https://github.com/omron-sinicx/projectpage-template/actions/workflows/lint.yaml/badge.svg)](https://github.com/omron-sinicx/projectpage-template/actions/workflows/lint.yaml)
 - A project page template using [React](https://ja.reactjs.org/) + [UIKit](https://getuikit.com/)
@@ -159,13 +156,12 @@ bibtex: >
     - see https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-set-personal-access-token-personal_token
     - register the token as `PERSONAL_TOKEN` at `https://github.com/path/to/your/repo/settings/secrets/actions`
 
-### Release project-page
+### Release your project page automatically bt GitHub Actions
+- Navigate to `https://github.com/{your-github-repo-path}/settings/pages`
+- Select `GitHub Actions` at **Build and Deployment > Source**
 - `$ git remote add github {your-github-repo-path}`
 - `$ git push github {local-project-page-branch}:project-page`
-  - GitHub Action atuomatically build HTML on `project-page` branch, and then send it to `gh-pages` branch.
-  - All you need to do is to push your project page code to `project-page` branch on your GitHub repo.
-### If the project page is not released automatically:
-- set `Source` `Branch=gh-pages` `/(root)` at `https://github.com/path/to/your/repo/settings/pages`
+- See also: [GitHub Documentation](https://docs.github.com/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site) and [actions/deploy-pages](https://github.com/actions/deploy-pages)
 
 ## Contributions
 Pull requests and bug reports are welcome. Feel free to [open issues](https://github.com/omron-sinicx/projectpage-template/issues)
