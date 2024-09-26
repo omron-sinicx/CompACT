@@ -59,6 +59,7 @@ class Template extends React.Component {
           authors={data.authors}
           affiliations={data.affiliations}
           meta={data.meta}
+          extra={data.extra}
           resources={data.resources}
           theme={data.theme}
           header={data.header}

@@ -41,6 +41,7 @@ export default class Authors extends React.Component {
             );
           })}
           <span className="uk-width-1-1">{this.props.meta}</span>
+          <span className="uk-width-1-1">{this.props.extra}</span>
         </div>
       </div>
     );

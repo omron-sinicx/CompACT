@@ -121,6 +121,7 @@ export default class Header extends React.Component {
                 authors={this.props.authors}
                 affiliations={this.props.affiliations}
                 meta={this.props.meta}
+                extra={this.props.extra}
               />
               <div className="uk-text-center uk-margin-top">
                 <a href="https://www.omron.com/sinicx" target="_blank">
