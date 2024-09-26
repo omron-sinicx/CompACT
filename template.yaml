@@ -48,7 +48,7 @@ header:
     sinic_curve.png
     #  bg_image: https://github.com/omron-sinicx/swarm-body/raw/main/images/teaser.jpg
 
-teaser: teaser.png
+teaser: overview.png
 overview: |
   Automating dexterous, contact-rich manipulation tasks using rigid robots is a significant challenge in robotics. Rigid robots, defined by
   their actuation through position commands, face issues of excessive contact forces due to their inability to adapt to contact with the environment, 
