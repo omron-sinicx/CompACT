@@ -1,0 +1,103 @@
+robosuite: # simulation specific parameters
+  env_name: TwoArmWiping
+  robots: None
+  env_configuration: None
+  initialization_noise: null
+  camera_heights: 480
+  camera_widths: 640
+  control_freq: 40
+  controller_configs: # controller specific parameters
+    type: "OSC_POSE"
+    input_max: 1
+    input_min: -1
+    output_max: [0.05, 0.05, 0.05, 0.5, 0.5, 0.5]
+    output_min: [-0.05, -0.05, -0.05, -0.5, -0.5, -0.5]
+    kp: 800
+    damping_ratio: 1
+    impedance_mode: "variable_kp"
+    kp_limits: [10, 1000]
+    damping_ratio_limits: [0, 10]
+    position_limits: null
+    orientation_limits: null
+    uncouple_pos_ori: true
+    control_delta: false
+    interpolation: null
+    ramp_ratio: 0.2
+
+task_parameters:
+  dataset_dir: "../datasets/sim_bimanual_wiping_osc" # use for dataset creation and training
+  ckpt_dir: "../rollouts/sim_bimanual_wiping_osc"
+  num_episodes: 30 # use for dataset creation
+  episode_len: 800 # use for evaluation
+  camera_names: ["closeview", "robot1_eye_in_hand"]
+
+policy_parameters:
+  camera_names: ["closeview", "robot1_eye_in_hand"]
+  bimanual: True
+  validation_type: "split" # 'cross_validation'
+  train_ratio: 0.9
+  stiffness_representation: "diag" # or 'cholesky'
+  orientation_representation: "ortho6" # or 'axis_angle'
+  action_dim: 31
+  state_dim: 19 # ortho6
+  ft_dim: 12 # bimanual
+  policy_class: ACT
+  lr: 1.0e-5
+  hidden_dim: 512
+  dim_feedforward: 3200
+  lr_backbone: 1.0e-5
+  backbone: "resnet18"
+  enc_layers: 4
+  dec_layers: 7
+  nheads: 8
+  seed: 1
+  kl_weight: 100
+  batch_size: 8
+  chunk_size: 100
+  num_queries: 100
+  temporal_agg: True
+  loss_type: l1
+  include_ft: True
+  ft_as_obs: False
+  action_space: "cartesian"
+  num_training_steps: 20000
+  num_steps_to_validate: 150
+  validation_interval: 1000
+  grad_clip_norm: 10
+  lr_scheduler: cosine
+  lr_warmup_steps: 1000
+  # Define the keys and expected length of each array
+  training_data:
+    observation_keys:
+      [
+        observation.eef.position,
+        observation.eef.rotation_ortho6,
+        observation.gripper,
+      ]
+    input_shapes:
+      # observation.images.closeview: [3, 480, 640]
+      # observation.images.robot1_eye_in_hand:  [3, 480, 640]
+      observation.eef.position: [6]
+      observation.eef.rotation_ortho6: [12]
+      observation.gripper: [1]
+      observation.ft: [12]
+
+    input_normalization_modes:
+      # observation.images.closeview: mean_std
+      # observation.images.robot1_eye_in_hand: mean_std
+      observation.eef.position: mean_std
+      observation.eef.rotation_ortho6: min_max
+      observation.gripper: mean_std
+      observation.ft: mean_std
+
+    output_shapes: # order matters, so position and rotation first
+      action.position: [6]
+      action.rotation_ortho6: [12]
+      action.gripper: [1]
+      action.stiffness_diag: [12]
+
+    output_normalization_modes:
+      action.position: mean_std
+      action.rotation_ortho6: min_max
+      action.gripper: mean_std
+      action.stiffness_diag: mean_std

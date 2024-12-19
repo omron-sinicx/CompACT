@@ -1,0 +1,82 @@
+robosuite: # simulation specific parameters
+  env_name: TwoArmWiping
+  robots: None
+  env_configuration: None
+  initialization_noise: null
+  camera_heights: 480
+  camera_widths: 640
+  control_freq: 40
+  controller_configs:
+    type: "JOINT_POSITION"
+    input_max: 1
+    input_min: -1
+    output_max: 0.05
+    output_min: -0.05
+    kp: 5000
+    damping_ratio: 5
+    impedance_mode: "fixed"
+    kp_limits: [0, 5000]
+    damping_ratio_limits: [0, 10]
+    qpos_limits: null
+    interpolation: null
+    ramp_ratio: 0.2
+    control_delta: False
+
+task_parameters:
+  dataset_dir: "../datasets/sim_bimanual_wiping_joint" # use for dataset creation and training
+  ckpt_dir: "../rollouts/sim_bimanual_wiping_joint"
+  num_episodes: 30 # use for dataset creation
+  episode_len: 800 # use for evaluation
+  camera_names: ["closeview", "robot1_eye_in_hand"]
+
+policy_parameters:
+  camera_names: ["closeview", "robot1_eye_in_hand"]
+  bimanual: True
+  validation_type: "split" # 'cross_validation'
+  train_ratio: 0.9
+  action_dim: 31
+  state_dim: 19 # ortho6
+  ft_dim: 12 # bimanual
+  policy_class: ACT
+  lr: 1.0e-5
+  hidden_dim: 512
+  dim_feedforward: 3200
+  lr_backbone: 1.0e-5
+  backbone: "resnet18"
+  enc_layers: 4
+  dec_layers: 7
+  nheads: 8
+  seed: 1
+  kl_weight: 100
+  batch_size: 8
+  chunk_size: 100
+  num_queries: 100
+  temporal_agg: True
+  loss_type: l1
+  include_ft: True
+  ft_as_obs: False
+  action_space: "joint"
+  num_training_steps: 20000
+  num_steps_to_validate: 150
+  validation_interval: 1000
+  grad_clip_norm: 10
+  lr_scheduler: cosine
+  lr_warmup_steps: 1000
+  # Define the keys and expected length of each array
+  training_data:
+    observation_keys: [observation.qpos]
+    input_shapes:
+      # observation.images.closeview: [3, 480, 640]
+      # observation.images.robot1_eye_in_hand:  [3, 480, 640]
+      observation.qpos: [13]
+
+    input_normalization_modes:
+      # observation.images.closeview: mean_std
+      # observation.images.robot1_eye_in_hand: mean_std
+      observation.qpos: mean_std
+
+    output_shapes: # order matters, so position and rotation first
+      action.qpos: [13]
+
+    output_normalization_modes:
+      action.qpos: mean_std
