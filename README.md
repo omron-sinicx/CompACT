@@ -4,7 +4,9 @@
 
 This repo contains the implementation of CompACT, together with a simulated environment.
 The simulation environment is implemented in the `robosuite` framework for a bimanual
-wiping task that is a digital twin of our real dual arm robotic environment.
+wiping task, a digital twin of our real dual-arm robotic environment.
+
+For the teleoperation system, check this repository: https://github.com/omron-sinicx/vive_tracking_ros
 
 ### Repo Structure
 
