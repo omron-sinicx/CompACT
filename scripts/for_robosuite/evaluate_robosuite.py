@@ -38,7 +38,7 @@ from act.policy import ACTPolicy, CNNMLPPolicy
 from act.utils import order_data, set_seed
 from einops import rearrange
 from osx_robot_control import math_utils
-from osx_teleoperation.dataset_utils import get_normalizers, reconstruct_dict, merge_dict_tensors
+from osx_teleoperation.dataset_utils import get_normalizers, reconstruct_dict
 
 from utils import format_observations
 

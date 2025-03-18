@@ -32,7 +32,6 @@ import h5py
 import imageio.v2 as iio
 import yaml
 
-from osx_teleoperation.debug_utils import format_batch,  load_hf_dataloader
 import robosuite as suite
 import robosuite.utils.transform_utils as T
 

@@ -28,11 +28,10 @@ import numpy as np
 import os
 import argparse
 import matplotlib.pyplot as plt
-import h5py
 import imageio.v2 as iio
 import yaml
 
-from act.utils import action_dict_to_robosuite, load_hf_dataset, tensor_dict_to_np
+from act.utils import load_hf_dataset, tensor_dict_to_np
 import robosuite as suite
 import robosuite.utils.transform_utils as T
 
