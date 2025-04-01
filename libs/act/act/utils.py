@@ -1,20 +1,21 @@
-import robosuite.utils.transform_utils as T
-from copy import copy
+import contextlib
+import inspect
+import h5py
 import math
+import numpy as np
+import os
+import random
+import robosuite.utils.transform_utils as T
+import torch
+import tqdm
+
+from copy import copy
+from math import ceil
 from pathlib import Path
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LambdaLR
-from math import ceil
-import numpy as np
-import torch
-import os
-import h5py
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Subset
 from safetensors.torch import load_file
-
-import tqdm
-import inspect
-import contextlib
 
 from lerobot.common.datasets.utils import unflatten_dict
 from lerobot.common.policies.normalize import Normalize, Unnormalize
@@ -443,3 +444,47 @@ def action_dict_to_robosuite(action_dict, orientation_representation, stiffness_
         action_rotation,
         action_dict['action.gripper'],
     ), bimanual)
+
+
+def get_random_batches(dataloader, num_batches):
+    dataset = dataloader.dataset
+    batch_size = dataloader.batch_size
+    dataset_size = len(dataset)
+
+    # Calculate the total number of samples we need
+    total_samples = num_batches * batch_size
+
+    # Ensure we don't request more samples than available
+    if total_samples > dataset_size:
+        raise ValueError(f"Requested {total_samples} samples, but dataset only has {dataset_size}")
+
+    # Get random indices
+    indices = random.sample(range(dataset_size), total_samples)
+
+    # Create a Subset of the dataset
+    subset = Subset(dataset, indices)
+
+    # Create a new DataLoader for this subset
+    subset_loader = DataLoader(subset, batch_size=batch_size, shuffle=False, pin_memory=dataloader.pin_memory, num_workers=dataloader.num_workers)
+
+    return subset_loader
+
+
+def get_random_batch(dataloader: DataLoader):
+    # Get the dataset from the dataloader
+    dataset = dataloader.dataset
+
+    # Calculate the number of samples in a batch
+    batch_size = dataloader.batch_size
+
+    # Get a random starting index
+    start_index = random.randint(0, len(dataset) - batch_size)
+
+    # Create a Subset of the dataset for just this batch
+    batch_subset = Subset(dataset, range(start_index, start_index + batch_size))
+
+    # Create a new DataLoader for just this batch
+    batch_loader = DataLoader(batch_subset, batch_size=batch_size, shuffle=False, pin_memory=dataloader.pin_memory, num_workers=dataloader.num_workers)
+
+    # Get the single batch from this DataLoader
+    return next(iter(batch_loader))

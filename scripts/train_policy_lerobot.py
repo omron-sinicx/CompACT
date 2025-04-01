@@ -33,7 +33,7 @@ from collections import deque
 from lerobot.common.datasets.utils import flatten_dict
 from lerobot.common.datasets.lerobot_dataset import LeRobotDataset, MultiLeRobotDataset
 from copy import deepcopy
-from act.utils import compute_dict_mean, get_cosine_schedule_with_warmup, set_seed, detach_dict  # helper functions
+from act.utils import compute_dict_mean, get_cosine_schedule_with_warmup, set_seed, detach_dict, get_normalizers, get_random_batches  # helper functions
 from act.policy import ACTPolicy, CNNMLPPolicy
 import yaml
 import tqdm
@@ -47,8 +47,6 @@ import shutil
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data import DataLoader
 
-from osx_teleoperation.dataset_utils import get_normalizers
-from osx_teleoperation.debug_utils import get_random_batches
 torch.set_printoptions(precision=4, sci_mode=False, linewidth=1000)
 
 
