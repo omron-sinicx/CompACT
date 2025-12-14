@@ -38,7 +38,7 @@ from act.policy import ACTPolicy, CNNMLPPolicy
 from act.utils import order_data, set_seed
 from einops import rearrange
 from osx_robot_control import math_utils
-from osx_teleoperation.dataset_utils import get_normalizers, reconstruct_dict
+from act.utils import get_normalizers, reconstruct_dict
 
 from utils import format_observations
 
@@ -318,7 +318,7 @@ def eval_bc(task_config, policy_config, robosuite_config, ckpt_name, debug=False
                     times.append(t)
                     if include_stiffness:
                         stiffness_vec.append(get_stiffness(policy_config['stiffness_representation'], env_action, arm="left"))
-                    forces_hist.append(obs_ft.ravel())
+                    forces_hist.append(ft.ravel())
                     if t % skip_frame == 0:
                         visualize_ft(times, forces_hist, stiffness_vec, fig, axs, axs_twin, arm="left")
                         axs.set_xlim(xmin=-max_timesteps*0.01, xmax=max_timesteps*1.01)
