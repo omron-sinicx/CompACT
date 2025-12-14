@@ -28,7 +28,7 @@ import glob
 import os
 import h5py
 import numpy as np
-from ur_control.transformations import axis_angle_from_quaternion, quaternion_from_axis_angle
+from robosuite.utils.transform_utils import axisangle2quat, quat2axisangle
 
 # Configure numpy printing options
 np.set_printoptions(linewidth=np.inf)
@@ -93,19 +93,19 @@ class RotationConsistencyChecker:
         last_a_rot = last_b_rot = None
         for attr in attributes:
             if last_a_rot is None:
-                last_a_rot = quaternion_from_axis_angle(attr[indices])
+                last_a_rot = axisangle2quat(attr[indices])
                 a_first_quaternions.append(last_a_rot)
                 if is_bimanual:
-                    last_b_rot = quaternion_from_axis_angle(attr[-4:-1])
+                    last_b_rot = axisangle2quat(attr[-4:-1])
                     b_first_quaternions.append(last_b_rot)
                 continue
 
-            a_rot = quaternion_from_axis_angle(attr[indices])
+            a_rot = axisangle2quat(attr[indices])
             self._assert_consistent_sign(a_rot, last_a_rot, 'a')
             last_a_rot = a_rot.copy()
 
             if is_bimanual:
-                b_rot = quaternion_from_axis_angle(attr[-4:-1])
+                b_rot = axisangle2quat(attr[-4:-1])
                 self._assert_consistent_sign(b_rot, last_b_rot, 'b')
                 last_b_rot = b_rot.copy()
 
@@ -199,13 +199,11 @@ class RotationConverter:
         """
         fixed_actions = []
         for action in actions:
-            a_q = quaternion_from_axis_angle(action[15:18])
+            a_q = axisangle2quat(action[15:18])
             fixed_action = np.copy(action)
-            fixed_action[15:18] = axis_angle_from_quaternion(a_q)
 
             if is_bimanual:
-                b_q = quaternion_from_axis_angle(action[-4:-1])
-                fixed_action[-4:-1] = axis_angle_from_quaternion(b_q)
+                b_q = axisangle2quat(action[-4:-1])
 
             fixed_actions.append(fixed_action)
         return fixed_actions
@@ -224,13 +222,11 @@ class RotationConverter:
         """
         fixed_ee_poses = []
         for ee_pos in ee_poses:
-            a_q = quaternion_from_axis_angle(ee_pos[3:6])
+            a_q = axisangle2quat(ee_pos[3:6])
             fixed_action = np.copy(ee_pos)
-            fixed_action[3:6] = axis_angle_from_quaternion(a_q)
 
             if is_bimanual:
-                b_q = quaternion_from_axis_angle(ee_pos[-4:-1])
-                fixed_action[-4:-1] = axis_angle_from_quaternion(b_q)
+                b_q = axisangle2quat(ee_pos[-4:-1])
 
             fixed_ee_poses.append(fixed_action)
         return fixed_ee_poses

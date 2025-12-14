@@ -6,13 +6,14 @@ import h5py
 import numpy as np
 import tqdm
 
-from osx_robot_control.math_utils import cholesky_vector_to_spd
-# from osx_teleoperation.debug_utils import print_action_diag_ortho6
-from ur_control.transformations import ortho6_from_axis_angle
+from robosuite.utils.transform_utils import cholesky_vector_to_spd, quat2ortho6, axisangle2quat
+
 
 np.set_printoptions(linewidth=np.inf)
 np.set_printoptions(formatter={"float": lambda x: "{0:0.3f}".format(x)})
 
+def ortho6_from_axis_angle(v):
+    return quat2ortho6(axisangle2quat(v))
 
 def get_stiffness_diag(cholesky_vector):
     return np.diag(cholesky_vector_to_spd(cholesky_vector))

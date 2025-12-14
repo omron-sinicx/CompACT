@@ -6,13 +6,13 @@ import pprint
 from safetensors.torch import load_file, save_file
 
 import torch
+import numpy as np
 from lerobot.common.datasets.compute_stats import compute_stats
 from lerobot.common.datasets.lerobot_dataset import CODEBASE_VERSION, LeRobotDataset
 from lerobot.common.datasets.utils import calculate_episode_data_index, flatten_dict, hf_transform_to_torch, load_hf_dataset
 from lerobot.scripts.push_dataset_to_hub import save_meta_data
-from osx_robot_control.math_utils import cholesky2diag
 
-from ur_control.transformations import ortho6_from_axis_angle
+from robosuite.utils.transform_utils import cholesky_vector_to_spd, quat2ortho6, axisangle2quat
 
 torch.set_printoptions(precision=4, sci_mode=False, linewidth=1000)
 
@@ -26,7 +26,7 @@ def split_eef_ortho6(eef_pos):
 
 def split_eef_axis_angle(eef_pos):
     position = eef_pos[:3]
-    rotation = torch.from_numpy(ortho6_from_axis_angle(eef_pos[3:6]))
+    rotation = torch.from_numpy(quat2ortho6(axisangle2quat(eef_pos[3:6])))
     gripper = eef_pos[6]
     return position, rotation, gripper
 
@@ -40,10 +40,10 @@ def split_action_diag_ortho6(action):
 
 
 def split_action_cholesky_axis_angle(action):
-    stiffness = torch.cat((torch.from_numpy(cholesky2diag(action[:6])),
-                           torch.from_numpy(cholesky2diag(action[6:12]))))
+    stiffness = torch.cat((torch.from_numpy(np.diag(cholesky_vector_to_spd(action[:6]))),
+                           torch.from_numpy(np.diag(cholesky_vector_to_spd(action[6:12])))))
     position = action[12:15]
-    rotation = torch.from_numpy(ortho6_from_axis_angle(action[15:18]))
+    rotation = torch.from_numpy(quat2ortho6(axisangle2quat(action[15:18])))
     if len(action) == 19:
         gripper = action[18]
     else:

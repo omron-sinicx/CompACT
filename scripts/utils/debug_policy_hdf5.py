@@ -30,7 +30,6 @@ import tqdm
 from act.policy import ACTPolicy, CNNMLPPolicy
 from act.utils import redirect_to_tqdm, set_seed  # helper functions
 from act.policy import ACTPolicy, CNNMLPPolicy
-from osx_robot_control import math_utils
 
 import torch
 import numpy as np
@@ -41,7 +40,7 @@ from einops import rearrange
 import h5py
 import yaml
 
-from ur_control.transformations import axis_angle_from_quaternion, quaternion_from_axis_angle
+from robosuite.utils.transform_utils import quat2axisangle, axisangle2quat
 
 
 def main(args):
@@ -163,7 +162,7 @@ def eval_bc(task_config, policy_config, ckpt_dir, ckpt_name, dataset):
                 obs_st = timeit.default_timer()
                 print(f'{dataset['eef_pos'][t]=}')
                 eef_pos = dataset['eef_pos'][t]
-                eef_pos[3:6] = axis_angle_from_quaternion(quaternion_from_axis_angle(eef_pos[3:6]))
+                eef_pos[3:6] = quat2axisangle(axisangle2quat(eef_pos[3:6]))
                 print(f'<> {eef_pos=}')
                 eef_pos = pre_process(eef_pos)
                 print(f'{eef_pos=}')
@@ -219,9 +218,6 @@ def eval_bc(task_config, policy_config, ckpt_dir, ckpt_name, dataset):
                 raw_action = raw_action.squeeze(0).cpu().numpy()
 
                 action = post_process(raw_action)
-
-                # a_stiffness_trans_matrix = math_utils.cholesky_vector_to_spd(action[:6])
-                # b_stiffness_trans_matrix = math_utils.cholesky_vector_to_spd(action[19:25])
 
                 # print(f" policy action: {np.round(action,3)}")
                 # print(f"dataset action: {np.round(dataset['action'][t], 3)}")

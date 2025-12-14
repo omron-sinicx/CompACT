@@ -7,7 +7,7 @@ import argparse
 
 import matplotlib.pyplot as plt
 
-from osx_robot_control.math_utils import cholesky_vector_to_spd
+from robosuite.utils.transform_utils import cholesky_vector_to_spd
 
 JOINT_NAMES = ["waist", "shoulder", "elbow", "forearm_roll", "wrist_angle", "wrist_rotate"]
 STATE_NAMES = JOINT_NAMES + ["gripper"]

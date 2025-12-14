@@ -37,7 +37,6 @@ import yaml
 from act.policy import ACTPolicy, CNNMLPPolicy
 from act.utils import order_data, set_seed
 from einops import rearrange
-from osx_robot_control import math_utils
 from act.utils import get_normalizers, reconstruct_dict
 
 from utils import format_observations
@@ -342,7 +341,7 @@ def get_stiffness(stiffness_representation, actions, arm):
     offset = 0 if arm == "right" else int(np.ceil(len(actions)/2))
     if stiffness_representation == 'cholesky':
         # Convert to SPD and return just the first value
-        s = math_utils.cholesky_vector_to_spd(actions[offset: offset + 6])
+        s = T.cholesky_vector_to_spd(actions[offset: offset + 6])
         return s[0, 0]
     else:
         # Return just the first value
