@@ -1,0 +1,46 @@
+# The docker-compose file for a container running on a single development machine
+version: "2.4"
+
+################################################################################
+
+services:
+  compact_env:
+    hostname: compact_env
+    runtime: nvidia
+    privileged: true
+    environment:
+      # Pass host user information.
+      - HOST_USER=${USER}
+      - HOST_UID=1000
+      - HOST_GID=1000
+      # Display X Server GUI.
+      - DISPLAY
+      - QT_X11_NO_MITSHM=1
+      # Configure Nvidia Docker interface.
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_REQUIRE_CUDA=cuda>=9.0
+      - DOCKER_RUNTIME=nvidia
+      # ROS parameters
+      - ROS_HOSTNAME=compact_env
+      - ROS_MASTER_URI=http://compact_env:11311
+    image: compact_env:latest
+    build:
+      context: ../
+      dockerfile: ./docker/dev/Dockerfile
+      args:
+        - DOCKERFILE_COMMIT_SHORT_SHA
+    volumes:
+      # Map ROS workspace folders.
+      - ../:/root/compact_env/
+      # Grant display access to X Server.
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      # Grant bus access to FlexBE App.
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+      # Grant access to serial usb ports for u2d2
+      - /dev/:/dev/
+      - /media/:/media/
+    network_mode: host
+    extra_hosts:
+      - "compact_env:127.0.0.1"
+    command: /root/compact_env/docker/dev/scripts/initialize-docker-container.sh
