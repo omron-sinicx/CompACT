@@ -142,3 +142,7 @@ dmypy.json
 MUJOCO_LOG.TXT
 
 datasets/
+
+robosuite
+
+lerobot
