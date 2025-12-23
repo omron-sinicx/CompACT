@@ -242,15 +242,9 @@ def eval_bc(task_config, policy_config, robosuite_config, ckpt_name, debug=False
                 if onscreen_render:
                     env.render()
 
-                # Offset the first reading
-                if t == 0:
-                    init_ft = np.concatenate([obs['robot0_eef_force_torque'], obs['robot1_eef_force_torque']])
-                cur_ft = np.concatenate([obs['robot0_eef_force_torque'], obs['robot1_eef_force_torque']])
-                ft = cur_ft - init_ft
-
                 # Prepare observations
-                observation = format_observations(env, obs, ft, camera_names)
-                observation = {k: v.cuda().float().unsqueeze(0) for k, v in observation.items()}
+                observation = format_observations(env, obs, camera_names)
+                observation = {k: torch.from_numpy(v).cuda().float().unsqueeze(0) for k, v in observation.items()}
 
                 image_data = torch.stack([observation[f'observation.images.{cam_name}'] for cam_name in camera_names], dim=-4).permute([0, 1, 4, 2, 3]).cuda()
                 image_list.append(image_data)
@@ -314,6 +308,7 @@ def eval_bc(task_config, policy_config, robosuite_config, ckpt_name, debug=False
                 obs, _, _, _ = env.step(env_action,)
 
                 if plot_ft:
+                    ft = np.concatenate([obs['robot0_eef_force_torque'], obs['robot1_eef_force_torque']])
                     times.append(t)
                     if include_stiffness:
                         stiffness_vec.append(get_stiffness(policy_config['stiffness_representation'], env_action, arm="left"))
