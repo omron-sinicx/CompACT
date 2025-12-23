@@ -31,12 +31,13 @@ We use Robosuite for our simulation environment. So clone and install our fork:
     git clone https://github.com/omron-sinicx/robosuite.git -b CompACT
     cd robosuite
     pip install -r requirements.txt
-    pip install -r requirements-extras.txt
+    pip install -r requirements-extra.txt
     pip install -e .
 
 We strongly recommend using the lerobot format for space efficient data collection. So clone and install our fork:
 
     git clone https://github.com/omron-sinicx/lerobot.git -b python-3.8
+    cd lerobot
     pip install -e .
 
 ### Example Usages
@@ -53,7 +54,7 @@ We use `TwoArmWiping` task in the example below.
 #### 1. Create a dataset for a_bot
 
 a_bot is the robot you see on the right in the Robosuite environment. Note that this robot is "right" arm in the code.
-To generate 10 episodes of wiping demonstration data of a_bot via gamepad, run:
+To generate 10 episodes of wiping demonstration data of a_bot via keyboard, run:
 
     cd CompACT/dependencies/comp-act/scripts/
     python3 for_robosuite/create_dataset_via_device_lerobot.py \
@@ -63,7 +64,7 @@ To generate 10 episodes of wiping demonstration data of a_bot via gamepad, run:
         --save \
         --ft
 
-After demonstrating each episode, press "p" / "START" in gamepad to save the demo and reset the environment to
+After demonstrating each episode, press "p" / "START" in keyboard to save the demo and reset the environment to
 proceed to the next demonstration.
 
 #### 3. Train
