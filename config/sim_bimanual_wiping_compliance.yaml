@@ -14,8 +14,8 @@ robosuite: # simulation specific parameters
     stiffness_limits: [1.0, 5000.0]
     error_scale: 1.0
     damping_ratio: 0.0
-    compliance_mode: "variable_stiffness_full"
-    impedance_mode: "variable_full_kp"
+    compliance_mode: "variable_stiffness_diag_only"
+    impedance_mode: "variable_kp"
     kp_limits: [0.001, 10]
     damping_ratio_limits: [0, 1]
     force_limits: [-50.0, 50.0]
