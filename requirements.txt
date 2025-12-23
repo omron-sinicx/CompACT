@@ -19,3 +19,4 @@ tensorboard
 colorama
 safetensors
 numpy-quaternion
+matplotlib
